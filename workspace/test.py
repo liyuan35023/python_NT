@@ -1,5 +1,7 @@
 __author__ = 'liyuan35023'
 # -*- coding: utf-8 -*-
+import random
+import string
 
 class send_info(object):
     def __init__(self, SendTime, packet_buf):
@@ -35,5 +37,11 @@ if __name__ == "__main__":
 L = [(1,2),(3,5),(4,2)]
 print L[0][1]
 a = 1
-
+strrr = 'fdasf'
+print strrr * 3
 print a
+
+print random.randint(1,50)
+print random.choice('abcdefghijklmnopqrstuvwxyz!@#$%^&*()')
+print string.join(random.sample(['z','y','x','w','v','u','t','s','r','q','p','o','n','m','l','k','j','i','h','g','f','e','d','c','b','a'], 5)).replace(' ', '')
+print random.uniform(1, 10)

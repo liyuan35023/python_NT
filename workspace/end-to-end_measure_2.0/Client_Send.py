@@ -5,15 +5,6 @@ import socket
 import sys
 import argparse
 import Send_UDPPacket
-import ntplib
-from time import ctime
-
-
-"""时间显示函数，用来返回网络时间"""
-def getTime():
-    ntp_client = ntplib.NTPClient()
-    response = ntp_client.request('cn.ntp.org.cn')
-    return ctime(response.tx_time)
 
 
 """套接字创建函数,创建UDP套接字"""
@@ -33,20 +24,23 @@ def send_packet(sock):
     parse.add_argument("--port", action="store", dest="port", type=int, required=False)
     parse.add_argument("--ptype", action="store", dest="ptype", type=int, required=True)
     parse.add_argument("--nPacket", action="store", dest="nPacket", type=int, required=False)
+    parse.add_argument("--interval", action="store", dest="interval", type=float, required=True)
+    parse.add_argument("--psize", action="store", dest="psize", type=int, required=True)
     given_args = parse.parse_args()
     ip_address = given_args.ip_address
     port = given_args.port
     ptype = given_args.ptype
     nPacket = given_args.nPacket
+    interval = given_args.interval
+    psize = given_args.psize
 
     ListAddress = [('192.168.1.65', 9999), ('192.168.1.14', 29999)]
 
-    # 探测包内容
-    packet_buf = "This is a test unicast packet."
-    Packet = Send_UDPPacket.Send_info(getTime(), packet_buf)
-
     # 发送参数设定
-    parameter = Send_UDPPacket.Para_info(ptype, len(Packet), nPacket)
+    parameter = Send_UDPPacket.Para_info(ptype, psize, nPacket, interval)
+
+    # 生成发送的探测包
+    Packet = Send_UDPPacket.generate_packet(psize)
 
     # 调用单播或者背靠背或者三明治包的类,发送探测包
     print "Sending Packet..."
