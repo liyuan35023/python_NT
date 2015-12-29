@@ -32,10 +32,12 @@ def send_packet(sock):
     parse.add_argument("--ip_address", action="store", dest="ip_address", required=False)
     parse.add_argument("--port", action="store", dest="port", type=int, required=False)
     parse.add_argument("--ptype", action="store", dest="ptype", type=int, required=True)
+    parse.add_argument("--nPacket", action="store", dest="nPacket", type=int, required=False)
     given_args = parse.parse_args()
     ip_address = given_args.ip_address
     port = given_args.port
     ptype = given_args.ptype
+    nPacket = given_args.nPacket
 
     ListAddress = [('192.168.1.65', 9999), ('192.168.1.14', 29999)]
 
@@ -43,16 +45,8 @@ def send_packet(sock):
     packet_buf = "This is a test unicast packet."
     Packet = Send_UDPPacket.Send_info(getTime(), packet_buf)
 
-    if ptype == 0:
-        numberOfpacket = 1
-    elif ptype == 1:
-        numberOfpacket = 2
-    elif ptype == 2:
-        numberOfpacket = 3
-    else:
-        raise ValueError("Wrong Packet Type: %s" % ptype)
     # 发送参数设定
-    parameter = Send_UDPPacket.Para_info(ptype, numberOfpacket, len(Packet))
+    parameter = Send_UDPPacket.Para_info(ptype, len(Packet), nPacket)
 
     # 调用单播或者背靠背或者三明治包的类,发送探测包
     print "Sending Packet..."
@@ -65,7 +59,8 @@ def send_packet(sock):
     elif ptype == 2:
         UDPPacket = Send_UDPPacket.SendSandwich()
         UDPPacket.Sendpacket(sock, ListAddress, parameter, Packet)
-
+    else:
+        raise ValueError("Packet Type %s Not Found" % ptype)
     # UDPPacket = Send_UDPPacket.SendUnicast()
     # UDPPacket.Sendpacket(sock, (ip_address, port), parameter, Packet)
     # print "Success to Send packet to %s!" % ip_address

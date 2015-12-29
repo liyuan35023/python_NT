@@ -19,12 +19,13 @@ class Send_info(object):
         return len(str(self.__SendTime) + str(self.__packet_buf))
 
 
-# 发送参数类,包括发送包的类型,包的数量,包的间隔
+# 发送参数类,包括发送包的类型,包的数量(指的是整个包的数量,比如共有2个背靠背包,指两个目的结点各收到两个包)，
+# 包的间隔（同包的数量的解释）
 class Para_info(object):
-    def __init__(self, packet_type, nPacket, packet_size, packet_interval=0):
+    def __init__(self, packet_type, packet_size, nPacket=1, packet_interval=0):
         self.packet_type = packet_type
-        self.nPacket = nPacket
         self.packet_size = packet_size
+        self.nPacket = nPacket
         self.packet_interval = packet_interval
 
 
@@ -34,21 +35,26 @@ class UDPSend(object):
     def Sendpacket(self, sock, (addr,port), para_infomation, sendpacket_info):
         pass
 
-"""单播包发送类,继承发送基类"""
+"""单播包发送类,继承发送基类(Version2.1:可以连续发送单播包)"""
 class SendUnicast(UDPSend):
     def Sendpacket(self, sock, (addr, port), para_infomation, sendpacket_info):
         if para_infomation.packet_type != typeUnicast:
             raise ValueError("Wrong Packet Type: %s" % para_infomation.packet_type)
-        try:
-            sock.sendto(str(sendpacket_info), (addr, port))
-            print "Success to Send Unicast Packet to %s!" % addr
-        except socket.error, e:
-            print "Error Send Unicast Packet: %s" % str(e)
-        except Exception, e:
-            print "Other Exception: %s" % str(e)
-        finally:
-            print "Closing Connection to the Server..."
-            sock.close()
+        packet_count = 1     # 包计数器
+        while True:
+            try:
+                sock.sendto(str(sendpacket_info), (addr, port))
+                print "Success to Send Num %s Unicast packet to %s!" % (packet_count, addr)
+            except socket.error, e:
+                print "Error Send Num %s Unicast Packet: %s" % (packet_count, str(e))
+            except Exception, e:
+                print "Other Exception When sending Num %s Unicast Packet: %s" % (packet_count, str(e))
+            packet_count += 1
+            if packet_count > para_infomation.nPacket:
+                break         #当包计数器超过预先设定的发包数时,退出循环
+        print "Closing Connection to the Server..."
+        sock.close()
+
 
 """背靠背包发送类,继承发送基类"""
 class SendBackToBack(UDPSend):
