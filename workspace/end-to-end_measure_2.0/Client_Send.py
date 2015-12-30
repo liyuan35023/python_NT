@@ -24,35 +24,32 @@ def send_packet(sock):
     parse.add_argument("--port", action="store", dest="port", type=int, required=False)
     parse.add_argument("--ptype", action="store", dest="ptype", type=int, required=True)
     parse.add_argument("--nPacket", action="store", dest="nPacket", type=int, required=False)
-    parse.add_argument("--interval", action="store", dest="interval", type=float, required=True)
+    parse.add_argument("--interval_mode", action="store", dest="interval_mode", type=int, required=True)
     parse.add_argument("--psize", action="store", dest="psize", type=int, required=True)
     given_args = parse.parse_args()
     ip_address = given_args.ip_address
     port = given_args.port
     ptype = given_args.ptype
     nPacket = given_args.nPacket
-    interval = given_args.interval
+    interval_mode = given_args.interval_mode
     psize = given_args.psize
 
-    ListAddress = [('192.168.1.65', 9999), ('192.168.1.14', 29999)]
+    ListAddress = [('192.168.1.65', 9999), ('121.49.97.58', 9999)]
 
     # 发送参数设定
-    parameter = Send_UDPPacket.Para_info(ptype, psize, nPacket, interval)
-
-    # 生成发送的探测包
-    Packet = Send_UDPPacket.generate_packet(psize)
+    parameter = Send_UDPPacket.Para_info(ptype, interval_mode, psize, nPacket)
 
     # 调用单播或者背靠背或者三明治包的类,发送探测包
     print "Sending Packet..."
     if ptype == 0:
         UDPPacket = Send_UDPPacket.SendUnicast()
-        UDPPacket.Sendpacket(sock, (ip_address, port), parameter, Packet)
+        UDPPacket.Sendpacket(sock, (ip_address, port), parameter)
     elif ptype == 1:
         UDPPacket = Send_UDPPacket.SendBackToBack()
-        UDPPacket.Sendpacket(sock, ListAddress, parameter, Packet)
+        UDPPacket.Sendpacket(sock, ListAddress, parameter)
     elif ptype == 2:
         UDPPacket = Send_UDPPacket.SendSandwich()
-        UDPPacket.Sendpacket(sock, ListAddress, parameter, Packet)
+        UDPPacket.Sendpacket(sock, ListAddress, parameter)
     else:
         raise ValueError("Packet Type %s Not Found" % ptype)
     # UDPPacket = Send_UDPPacket.SendUnicast()
