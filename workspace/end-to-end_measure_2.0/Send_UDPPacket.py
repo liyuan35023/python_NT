@@ -95,7 +95,7 @@ class SendUnicast(UDPSend):
         packet_count = 1     # 包计数器
         while True:
             try:
-                # 探测包直接生成,包的信息包括时间及随机产生的字符川
+                # 探测包直接生成,包的信息包括时间及随机产生的字符串
                 sock.sendto(str(generate_packet(para_infomation.packet_size)), (addr, port))
                 print "Success to Send Num %s Unicast packet to %s!" % (packet_count, addr)
             except socket.error, e:
