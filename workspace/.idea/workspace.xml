@@ -5,14 +5,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ad97b2df-387f-4d17-986b-ec3703969cb0" name="Default" comment="version 3.0---多线程Server收包,多线程发背靠背或者三明治包,多进程发单播包.包信息增加包的序号.通过文件读入目的ip地址.&#10;">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/end-to-end_measure_3.0/readfiles/BackToBack_ip" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/end-to-end_measure_3.0/Client_Send.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/end-to-end_measure_3.0/readfiles/Sandwich_ip" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/end-to-end_measure_3.0/Send_UDPPacket.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/end-to-end_measure_3.0/Server_Receive.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/end-to-end_measure_3.0/readfiles/Unicast_ip" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/end-to-end_measure_3.0/forkingServer_Receive.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/end-to-end_measure_3.0/forking_mixin_socket_error.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="workspace.iws" />
@@ -799,7 +791,13 @@
       <option name="project" value="LOCAL" />
       <updated>1451996146177</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="version 3.0---多线程Server收包,多线程发背靠背或者三明治包,多进程发单播包.包信息增加包的序号.通过文件读入目的ip地址.&#10;">
+      <created>1451996375808</created>
+      <option name="number" value="00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1451996375808</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TodoView" selected-index="4">
@@ -821,13 +819,13 @@
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24981132" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.15924528" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.15924528" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.30749354" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.6653747" sideWeight="0.4973585" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.22739018" sideWeight="0.49433962" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.22739018" sideWeight="0.50566036" order="8" side_tool="true" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.18346253" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.18346253" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
