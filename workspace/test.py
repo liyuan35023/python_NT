@@ -1,4 +1,43 @@
 __author__ = 'liyuan35023'
+
+# import urllib2
+# import cookielib
+# url = 'http://www.baidu.com'
+#
+# print 'fang fa 1:'
+# response1 = urllib2.urlopen(url)
+#
+# print response1.getcode()
+# print len(response1.read())
+#
+# request = urllib2.Request(url)
+# request.add_header('user-agent', 'Mozilla/5.0')
+# response2 = urllib2.urlopen(request)
+# print 'fang fa 2:'
+#
+# print response2.getcode()
+# print len(response2.read())
+#
+#
+#
+# print 'fang fa 3'
+#
+# cj = cookielib.CookieJar()
+# opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
+# urllib2.install_opener(opener)
+# response3 = urllib2.urlopen(url)
+#
+#
+# print response3.getcode()
+# print response3.read()
+ListAddress = []
+with open('./end-to-end_measure_3.0/readfiles/Unicast_ip', 'r') as f_Unicast:
+            for line in f_Unicast.readlines():
+                #if line.strip():
+                ListAddress.append(line.strip())
+# while '' in ListAddress:
+#     ListAddress.remove('')
+print ListAddress
  # -*- coding: utf-8 -*-
 import string
 # # import datetime
@@ -92,81 +131,81 @@ import string
 # print datetime.datetime.now().microsecond
 # print time.localtime()
 
-#coding: utf-8
-import multiprocessing
-import time
+# #coding: utf-8
+# import multiprocessing
+# import time
+#
+#
+# class test(object):
+#
+#     def func(msg):
+#         print "msg:", msg
+#         time.sleep(3)
+#         print "end"
+#
+#     def pooool(self):
+#         pool = multiprocessing.Pool(processes=3)
+#         for i in xrange(4):
+#             msg = "hello %d" %(i)
 
+#
+#         print "Mark~ Mark~ Mark~~~~~~~~~~~~~~~~~~~~~~"
+#         pool.close()
+#         pool.join()
+#         print "Sub-process(es) done."
+#
+#
+#
+# #!/usr/bin/env python
+# #coding=gbk
+#
+# import threading
+# import time, random,  sys
+#
+# class Counter:
+#     def __init__(self):
+#         self.lock = threading.Lock()
+#         self.value = 0
+#
+#     def increment(self):
+#         self.lock.acquire()
+#         self.value = value = self.value + 1
+#         self.lock.release()
+#         return value
+#
+# counter = Counter()
+# cond = threading.Condition()
+#
+# class Worker(threading.Thread):
+#
+#     def run(self):
+#         print self.getName(),  "-- created."
+#         cond.acquire()
+#         #for i in range(10):
+#             # pretend we're doing something that takes 10?00 ms
+#             #value = counter.increment()
+#             # time.sleep(random.randint(10, 100) / 1000.0)
+#         cond.wait()
+#         #print self.getName(), "-- task", "finished"
+#         cond.release()
+#
+#
+#
+# if __name__ == '__main__':
+#
+#         try:
+#             for i in range(3500):
+#                 Worker().start() # start a worker
+#         except BaseException,  e:
 
-class test(object):
-
-    def func(msg):
-        print "msg:", msg
-        time.sleep(3)
-        print "end"
-
-    def pooool(self):
-        pool = multiprocessing.Pool(processes=3)
-        for i in xrange(4):
-            msg = "hello %d" %(i)
-            pool.apply_async(self.func, (msg, ))   #维持执行的进程总数为processes，当一个进程执行完毕后会添加新的进程进去
-
-        print "Mark~ Mark~ Mark~~~~~~~~~~~~~~~~~~~~~~"
-        pool.close()
-        pool.join()   #调用join之前，先调用close函数，否则会出错。执行完close后不会有新的进程加入到pool,join函数等待所有子进程结束
-        print "Sub-process(es) done."
-
-
-
-#!/usr/bin/env python
-#coding=gbk
-
-import threading
-import time, random,  sys
-
-class Counter:
-    def __init__(self):
-        self.lock = threading.Lock()
-        self.value = 0
-
-    def increment(self):
-        self.lock.acquire()
-        self.value = value = self.value + 1
-        self.lock.release()
-        return value
-
-counter = Counter()
-cond = threading.Condition()
-
-class Worker(threading.Thread):
-
-    def run(self):
-        print self.getName(),  "-- created."
-        cond.acquire()
-        #for i in range(10):
-            # pretend we're doing something that takes 10?00 ms
-            #value = counter.increment()
-            # time.sleep(random.randint(10, 100) / 1000.0)
-        cond.wait()
-        #print self.getName(), "-- task", "finished"
-        cond.release()
-
-
-
-if __name__ == '__main__':
-
-        try:
-            for i in range(3500):
-                Worker().start() # start a worker
-        except BaseException,  e:
-            print "异常: ", type(e),  e
-            time.sleep(5)
-            print "maxium i=",  i
-        finally:
-            cond.acquire()
-            cond.notifyAll()
-            cond.release()
-            time.sleep(3)
-            print threading.currentThread().getName(),  " quit"
+#             time.sleep(5)
+#             print "maxium i=",  i
+#         finally:
+#             cond.acquire()
+#             cond.notifyAll()
+#             cond.release()
+#             time.sleep(3)
+#             print threading.currentThread().getName(),  " quit"
 
 
 

@@ -2,14 +2,14 @@ __author__ = 'liyuan35023'
 # -*- coding: utf-8 -*-
 
 import os
+import socket
 import SocketServer
 from datetime import datetime
 
 
-SERVER_HOST = 'localhost'
+SERVER_HOST = '127.0.0.1'
 SERVER_PORT = 9999
 ECHO_MSG = 'Hello echo server!'
-TIMEOUT = 10000
 
 """
 使用SocketServer模块实现了服务器端收包的多线程
@@ -31,14 +31,19 @@ class ForkingServerRequestHandler(SocketServer.BaseRequestHandler):
 
 
 class ForkingServer(SocketServer.ForkingMixIn, SocketServer.UDPServer):
-    pass
+    # 重写bind函数,设置套接字选项,使地址可以重用
+    def server_bind(self):
+        self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        self.socket.bind(self.server_address)
+        self.server_address = self.socket.getsockname()
 
 
 def main():
     print "Waiting for data..."
+
     server = ForkingServer((SERVER_HOST, SERVER_PORT), ForkingServerRequestHandler)
     print "Server loop running PID: %s" % os.getpid()
     server.serve_forever()
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

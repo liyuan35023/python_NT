@@ -13,14 +13,14 @@ def reuse_socket_address():
     print "Old sock state: %s" % old_state
 
     # enable
-    #sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     new_state = sock.getsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR)
     print "New sock state: %s" % new_state
 
     local_port = 8283
 
     srv = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    #srv.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    srv.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     srv.bind(('', local_port))
     srv.listen(1)
     print "listening port: %s" % local_port

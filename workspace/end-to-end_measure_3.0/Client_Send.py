@@ -19,17 +19,23 @@ def create_socket():
 
 """探测包发送函数"""
 def send_packet(sock):
-    # 命令行参数解析,从命令行读入发包类型,发包数量,发包的间隔模式(均匀,泊松,正态),小包大小
-    parse = argparse.ArgumentParser(description="Send packet!")
-    parse.add_argument("--ptype", action="store", dest="ptype", type=int, required=True)
-    parse.add_argument("--nPacket", action="store", dest="nPacket", type=int, required=False)
-    parse.add_argument("--interval_mode", action="store", dest="interval_mode", type=int, required=True)
-    parse.add_argument("--psize", action="store", dest="psize", type=int, required=True)
-    given_args = parse.parse_args()
-    ptype = given_args.ptype
-    nPacket = given_args.nPacket
-    interval_mode = given_args.interval_mode
-    psize = given_args.psize
+
+    # 从文件中读入发送参数,文件的格式为每行代表一个参数,依次为
+    # 发送包的类型(单播--0,背靠背--1,三明治--2)
+    # 包的数量
+    # 发包的时间间隔模式(均匀--0,泊松--1,高斯--2)
+    # 发送的包的大小(三明治包中的大包大小为小包的20倍)
+    with open('./readfiles/sendparameter', 'r') as f_para:
+        list_parameter = f_para.readlines()
+        while '' in list_parameter:
+            list_parameter.remove('')
+        if len(list_parameter) != 4:
+            raise ValueError("Miss send parameters in ./readfiles/sendparameter.txt, Need four parameters!")
+        else:
+            ptype = int(list_parameter[0].strip())   ## strip把行尾'\n'字符去掉
+            nPacket = int(list_parameter[1].strip())
+            interval_mode = int(list_parameter[2].strip())
+            psize = int(list_parameter[3].strip())
 
     # ListAddress代表目的地址,从文件读入ip,默认PORT为9999
     ListAddress = []
@@ -68,7 +74,11 @@ def send_packet(sock):
     else:
         raise ValueError("Packet Type %s Not Found" % ptype)
 
-if __name__ == "__main__":
+
+# 主函数,在measure_tools中调用main函数
+def main():
     sock = create_socket()
     send_packet(sock)
 
+if __name__ == "__main__":
+    main()

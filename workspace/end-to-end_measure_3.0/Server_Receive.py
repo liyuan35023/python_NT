@@ -1,5 +1,8 @@
 __author__ = 'liyuan35023'
 # -*- coding: utf-8 -*-
+"""
+该文件已弃用,服务器端使用SocketServer模块实现多进程收包
+"""
 
 import socket
 import os
