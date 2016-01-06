@@ -51,6 +51,9 @@ class Send_info(object):
     def __len__(self):
         return len(self.send_str)
 
+    def get_SendTime(self):
+        return self.__SendTime
+
 # 发送参数类,包括发送包的类型,包的大小(UTF-8中,一个英文字符为一个字节),
 # 包的间隔模式（同包的数量的解释,有3种模式:均匀间隔发包,泊松发包,高斯发包）
 # 包的数量(指的是整个包的数量,比如共有2个背靠背包,指两个目的结点各收到两个包),
@@ -94,6 +97,11 @@ class UDPSend(object):
         Packet = Send_info(packet_number, datetime.now(), packet_buf)
         return Packet
 
+    # 计算发包速率
+    def calculate_sendrate(self, start_time, end_time, bytes):
+        rate = bytes / float((end_time - start_time).seconds)
+        return rate
+
 """
 单播包发送类,继承发送基类
 (version 3.0---从文件读入多个ip地址,多进程发送单播包)
@@ -104,12 +112,23 @@ class SendUnicast(UDPSend):
         while True:
             try:
                 # 探测包直接生成,包的信息包括时间及随机产生的字符串
-                sock.sendto(str(self.generate_packet(para_infomation.packet_size, packet_count)), (addr, port))
+                packet = self.generate_packet(para_infomation.packet_size, packet_count)
+                sock.sendto(str(packet), (addr, port))
                 print "Success to Send Num %s Unicast packet to %s!" % (packet_count, addr)
             except socket.error, e:
                 print "Error Send Num %s Unicast Packet: %s" % (packet_count, str(e))
             except Exception, e:
                 print "Other Exception When sending Num %s Unicast Packet: %s" % (packet_count, str(e))
+            else:
+                # 计算报文发送速率,单位为bytes/s
+                if packet_count == 1:
+                    start_time = packet.get_SendTime()
+                elif packet_count == para_infomation.nPacket:
+                    end_time = packet.get_SendTime()
+                    # len(packet)实际发的字节数,utf-8中英文与数字都只占一个字节,所以不用转换为bytes类型
+                    sum_bytes = packet_count * len(packet)
+                    Transmission_rate = self.calculate_sendrate(start_time, end_time, sum_bytes)
+                    print "Send to %s ,Transmission rate is %s" % (addr, Transmission_rate)
             packet_count += 1
             if packet_count > para_infomation.nPacket:
                 break         # 当包计数器超过预先设定的发包数时,退出循环

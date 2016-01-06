@@ -1,4 +1,17 @@
 __author__ = 'liyuan35023'
+# from datetime import datetime, time
+# from time import sleep
+# a = datetime.now()
+# print a
+# sleep(2)
+# c = datetime.now()
+# print c
+# print (c-a).seconds / 3.0
+strr = 'fadfas'
+print strr.encode('ascii')
+
+
+
 
 # import urllib2
 # import cookielib
@@ -30,15 +43,15 @@ __author__ = 'liyuan35023'
 #
 # print response3.getcode()
 # print response3.read()
-ListAddress = []
-with open('./end-to-end_measure_3.0/readfiles/Unicast_ip', 'r') as f_Unicast:
-            for line in f_Unicast.readlines():
-                #if line.strip():
-                ListAddress.append(line.strip())
-# while '' in ListAddress:
-#     ListAddress.remove('')
-print ListAddress
- # -*- coding: utf-8 -*-
+# ListAddress = []
+# with open('./end-to-end_measure_3.0/readfiles/Unicast_ip', 'r') as f_Unicast:
+#             for line in f_Unicast.readlines():
+#                 #if line.strip():
+#                 ListAddress.append(line.strip())
+# # while '' in ListAddress:
+# #     ListAddress.remove('')
+# print ListAddress
+#  # -*- coding: utf-8 -*-
 import string
 # # import datetime
 # # import time
