@@ -5,7 +5,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ad97b2df-387f-4d17-986b-ec3703969cb0" name="Default" comment="version 3.0---多线程Server收包,多线程发背靠背或者三明治包,多进程发单播包.包信息增加包的序号.通过文件读入目的ip地址----3.1-&gt;在同一py中根据传入参数选择模式以运行客户端或服务器&#10;">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/end-to-end_measure_3.0/readfiles/sendparameter" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="workspace.iws" />
@@ -854,7 +853,13 @@
       <option name="project" value="LOCAL" />
       <updated>1452078581693</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="version 3.0---多线程Server收包,多线程发背靠背或者三明治包,多进程发单播包.包信息增加包的序号.通过文件读入目的ip地址----3.1-&gt;在同一py中根据传入参数选择模式以运行客户端或服务器&#10;">
+      <created>1452079968964</created>
+      <option name="number" value="00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1452079968964</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TodoView" selected-index="4">
