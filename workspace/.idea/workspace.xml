@@ -4,13 +4,8 @@
     <bookmark url="file://$PROJECT_DIR$/Python_Network_programming/local_machine_info.py" line="8" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ad97b2df-387f-4d17-986b-ec3703969cb0" name="Default" comment="version 3.0---多线程Server收包,多线程发背靠背或者三明治包,多进程发单播包.包信息增加包的序号.通过文件读入目的ip地址.&#10;">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/end-to-end_measure_3.0/measure_tools.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/end-to-end_measure_3.0/Client_Send.py" afterPath="$PROJECT_DIR$/end-to-end_measure_3.0/Client_Send.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/end-to-end_measure_3.0/Server_Receive.py" afterPath="$PROJECT_DIR$/end-to-end_measure_3.0/Server_Receive.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/end-to-end_measure_3.0/forkingServer_Receive.py" afterPath="$PROJECT_DIR$/end-to-end_measure_3.0/forkingServer_Receive.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Python_Network_programming/reuse_socket_address.py" afterPath="$PROJECT_DIR$/Python_Network_programming/reuse_socket_address.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test.py" afterPath="$PROJECT_DIR$/test.py" />
+    <list default="true" id="ad97b2df-387f-4d17-986b-ec3703969cb0" name="Default" comment="version 3.0---多线程Server收包,多线程发背靠背或者三明治包,多进程发单播包.包信息增加包的序号.通过文件读入目的ip地址----3.1-&gt;在同一py中根据传入参数选择模式以运行客户端或服务器&#10;">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/end-to-end_measure_3.0/readfiles/sendparameter" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="workspace.iws" />
@@ -124,8 +119,10 @@
         <entry file="file://$PROJECT_DIR$/end-to-end_measure_3.0/Server_Receive.py">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.16981132">
-              <caret line="6" column="13" selection-start-line="6" selection-start-column="13" selection-end-line="6" selection-end-column="13" />
-              <folding />
+              <caret line="18" column="2" selection-start-line="18" selection-start-column="2" selection-end-line="18" selection-end-column="2" />
+              <folding>
+                <element signature="e#95#108#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -851,7 +848,13 @@
       <option name="project" value="LOCAL" />
       <updated>1451997113225</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="version 3.0---多线程Server收包,多线程发背靠背或者三明治包,多进程发单播包.包信息增加包的序号.通过文件读入目的ip地址----3.1-&gt;在同一py中根据传入参数选择模式以运行客户端或服务器&#10;">
+      <created>1452078581693</created>
+      <option name="number" value="00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1452078581693</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TodoView" selected-index="4">
@@ -867,6 +870,7 @@
     <frame x="65" y="-4" width="1375" height="904" extended-state="6" />
     <editor active="true" />
     <layout>
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32816538" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32816538" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -883,7 +887,6 @@
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32945737" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
@@ -906,7 +909,8 @@
     <MESSAGE value="version 2.2---发包数量,发包间隔设定.发包内容控制" />
     <MESSAGE value="version 2.3---发包间隔三种模式(均匀,泊松,高斯)设定,发包内容可重复.&#10;" />
     <MESSAGE value="version 3.0---多线程Server收包,多线程发背靠背或者三明治包,多进程发单播包.包信息增加包的序号.通过文件读入目的ip地址.&#10;" />
-    <option name="LAST_COMMIT_MESSAGE" value="version 3.0---多线程Server收包,多线程发背靠背或者三明治包,多进程发单播包.包信息增加包的序号.通过文件读入目的ip地址.&#10;" />
+    <MESSAGE value="version 3.0---多线程Server收包,多线程发背靠背或者三明治包,多进程发单播包.包信息增加包的序号.通过文件读入目的ip地址----3.1-&gt;在同一py中根据传入参数选择模式以运行客户端或服务器&#10;" />
+    <option name="LAST_COMMIT_MESSAGE" value="version 3.0---多线程Server收包,多线程发背靠背或者三明治包,多进程发单播包.包信息增加包的序号.通过文件读入目的ip地址----3.1-&gt;在同一py中根据传入参数选择模式以运行客户端或服务器&#10;" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1334,8 +1338,10 @@
     <entry file="file://$PROJECT_DIR$/end-to-end_measure_3.0/Server_Receive.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.16981132">
-          <caret line="6" column="13" selection-start-line="6" selection-start-column="13" selection-end-line="6" selection-end-column="13" />
-          <folding />
+          <caret line="18" column="2" selection-start-line="18" selection-start-column="2" selection-end-line="18" selection-end-column="2" />
+          <folding>
+            <element signature="e#95#108#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
