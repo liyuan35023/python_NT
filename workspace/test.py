@@ -1,17 +1,32 @@
 __author__ = 'liyuan35023'
-# from datetime import datetime, time
-# from time import sleep
-# a = datetime.now()
-# print a
-# sleep(2)
-# c = datetime.now()
-# print c
-# print (c-a).seconds / 3.0
-strr = 'fadfas'
-print strr.encode('ascii')
+from datetime import datetime, time
+from time import sleep
+from multiprocessing import Value
+a = datetime.now()
+print a
+sleep(1)
+c = datetime.now()
+print c
+print (c-a).seconds / 3.0
+
+v = Value('t')
+v.value = a
+print v.value
 
 
 
+# strr = 'fadfas'
+# print strr.encode('ascii')
+# f = 1
+# def a():
+#
+#     b()
+#
+# def b():
+#     print f
+#
+# if __name__ == "__main__":
+#     a()
 
 # import urllib2
 # import cookielib
