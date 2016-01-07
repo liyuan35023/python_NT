@@ -3,7 +3,6 @@ __author__ = 'liyuan35023'
 
 import socket
 import sys
-import argparse
 import Send_UDPPacket
 
 PORT = 9999
