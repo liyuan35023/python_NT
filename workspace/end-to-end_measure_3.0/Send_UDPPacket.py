@@ -107,12 +107,12 @@ class UDPSend(object):
 (version 3.0---从文件读入多个ip地址,多进程发送单播包)
 """
 class SendUnicast(UDPSend):
-    def SendTo(self, sock, para_infomation, (addr, port)):
+    def SendTo(self, sock, para_information, (addr, port)):
         packet_count = 1     # 包计数器
         while True:
             try:
                 # 探测包直接生成,包的信息包括时间及随机产生的字符串及包的序号
-                packet = self.generate_packet(para_infomation.packet_size, packet_count)
+                packet = self.generate_packet(para_information.packet_size, packet_count)
                 sock.sendto(str(packet), (addr, port))
                 print "Success to Send Num %s Unicast packet to %s!" % (packet_count, addr)
             except socket.error, e:
@@ -123,7 +123,7 @@ class SendUnicast(UDPSend):
                 # 计算报文发送速率,单位为bytes/s
                 if packet_count == 1:
                     start_time = packet.get_SendTime()
-                elif packet_count == para_infomation.nPacket:
+                elif packet_count == para_information.nPacket:
                     end_time = packet.get_SendTime()
                     transmissiontime = (end_time - start_time).seconds
                     # len(packet)实际发的字节数,utf-8中英文与数字都只占一个字节,所以不用转换为bytes类型
@@ -131,9 +131,9 @@ class SendUnicast(UDPSend):
                     Transmission_rate = self.calculate_sendrate(transmissiontime, sum_bytes)
                     print "Send to %s ,Transmission rate is %s" % (addr, Transmission_rate)
             packet_count += 1
-            if packet_count > para_infomation.nPacket:
+            if packet_count > para_information.nPacket:
                 break         # 当包计数器超过预先设定的发包数时,退出循环
-            sleep(para_infomation.generate_interval())    # 发包间隔,每发完一个包,程序等待一段时间
+            sleep(para_information.generate_interval())    # 发包间隔,每发完一个包,程序等待一段时间
 
     def Sendpacket(self, sock, ListAddress, para_infomation):
         if para_infomation.packet_type != TYPE_UNICAST:
@@ -164,13 +164,13 @@ class SendUnicast(UDPSend):
 """
 class SendBackToBack(UDPSend):
     # 对Socket的sendto函数进行重写,以实现多线程的发送多探测包
-    def SendTo(self, sock, para_infomation, (addr, port), sum_bytes, transmission_time):
+    def SendTo(self, sock, para_information, (addr, port), sum_bytes, transmission_time):
         packet_count = 1
 
         while True:
             try:
                 # 探测包直接生成,包的信息包括时间及随机产生的字符串及包的序号
-                packet = self.generate_packet(para_infomation.packet_size, packet_count)
+                packet = self.generate_packet(para_information.packet_size, packet_count)
                 sock.sendto(str(packet), (addr, port))
                 print "Success to Send Num %s BTB Packet to %s" % (packet_count, addr)
             except socket.error, e:
@@ -180,21 +180,21 @@ class SendBackToBack(UDPSend):
             else:
                 if packet_count == 1:
                     start_time = packet.get_SendTime()
-                elif packet_count == para_infomation.nPacket:
+                elif packet_count == para_information.nPacket:
                     end_time = packet.get_SendTime()
                     # len(packet)实际发的字节数,utf-8中英文与数字都只占一个字节,所以不用转换为bytes类型
                     sum_bytes.value = packet_count * len(packet)
                     transmission_time.value = (end_time - start_time).seconds
             packet_count += 1
-            if packet_count > para_infomation.nPacket:
+            if packet_count > para_information.nPacket:
                 break                 # 当包计数器超过预先设定的发包数时,退出循环
-            sleep(para_infomation.generate_interval())           # 发包间隔,每发完一个包,程序等待一段时间
+            sleep(para_information.generate_interval())           # 发包间隔,每发完一个包,程序等待一段时间
 
 
 
-    def Sendpacket(self, sock, ListAddress, para_infomation):
-        if para_infomation.packet_type != TYPE_BACKTOBACK:
-            raise ValueError("Wrong Packet Type: %s" % para_infomation.packet_type)
+    def Sendpacket(self, sock, ListAddress, para_information):
+        if para_information.packet_type != TYPE_BACKTOBACK:
+            raise ValueError("Wrong Packet Type: %s" % para_information.packet_type)
         sum_bytes1 = Value('i', 0)
         sum_bytes2 = Value('i', 0)
         transmission_time1 = Value('i', 0)
@@ -202,9 +202,9 @@ class SendBackToBack(UDPSend):
 
         # 子进程1用来发送背靠背包的第一个包
         # 子进程2用来发送背靠背包的第二个包
-        child_process1 = Process(target=self.SendTo, args=(sock, para_infomation, ListAddress[0],
+        child_process1 = Process(target=self.SendTo, args=(sock, para_information, ListAddress[0],
                                                            sum_bytes1, transmission_time1))
-        child_process2 = Process(target=self.SendTo, args=(sock, para_infomation, ListAddress[1],
+        child_process2 = Process(target=self.SendTo, args=(sock, para_information, ListAddress[1],
                                                            sum_bytes2, transmission_time2))
 
         # start函数：启动子进程,进行发包
@@ -232,12 +232,12 @@ class SendBackToBack(UDPSend):
 """
 class SendSandwich(UDPSend):
     # 重写sendto函数,用来发送第一个和第三个小探测包
-    def SendToLittle(self, sock, para_infomation, (addr, port), event1, event2, sum_bytes, transmission_time):
+    def SendToLittle(self, sock, para_information, (addr, port), event1, event2, sum_bytes, transmission_time):
         packet_count = 1
         while True:
             # 发送三明治包中的第一个小探测包
             try:
-                packet = self.generate_packet(para_infomation.packet_size, packet_count)
+                packet = self.generate_packet(para_information.packet_size, packet_count)
                 sock.sendto(str(packet), (addr, port))
                 # event1 表示第一个小包发送完毕
                 event1.set()
@@ -254,7 +254,7 @@ class SendSandwich(UDPSend):
 
             # 发送三明治包中的第三个小探测包
             try:
-                packet = self.generate_packet(para_infomation.packet_size, packet_count)
+                packet = self.generate_packet(para_information.packet_size, packet_count)
                 sock.sendto(str(packet), (addr, port))
                 print "Success to Send Num %s third small sandwich packet to %s" % (packet_count, addr)
             except socket.error, e:
@@ -262,7 +262,7 @@ class SendSandwich(UDPSend):
             except Exception, e:
                 print "Other Exception When Sending Num %s third small sandwich packet: %s" % (packet_count, str(e))
             else:
-                if packet_count == para_infomation.nPacket:
+                if packet_count == para_information.nPacket:
                     end_time = packet.get_SendTime()
                     # len(packet)实际发的字节数,utf-8中英文与数字都只占一个字节,所以不用转换为bytes类型
                     sum_bytes.value = packet_count * len(packet) * 2
@@ -271,18 +271,18 @@ class SendSandwich(UDPSend):
             event1.clear()
             event2.clear()
             packet_count += 1
-            if packet_count > para_infomation.nPacket:
+            if packet_count > para_information.nPacket:
                 break                 # 当包计数器超过预先设定的发包数时,退出循环
-            sleep(para_infomation.generate_interval())           # 发包间隔,每发完一个包,程序等待一段时间
+            sleep(para_information.generate_interval())           # 发包间隔,每发完一个包,程序等待一段时间
 
     # 重写sendto函数,用来发送第二个大探测包
-    def SendToLarge(self, sock, para_infomation, (addr, port), event1, event2, sum_bytes, transmission_time):
+    def SendToLarge(self, sock, para_information, (addr, port), event1, event2, sum_bytes, transmission_time):
         packet_count = 1
         while True:
             try:
                 # 等待第一个小包发送完毕
                 event1.wait()
-                packet = self.generate_packet(para_infomation.packet_size, packet_count)
+                packet = self.generate_packet(para_information.packet_size, packet_count)
                 sock.sendto(str(packet) * 20, (addr, port))
                 # 发送完大包后,将时间event设置为已发生,使另外一个子进程继续发送第三个小探测包
                 event2.set()
@@ -294,20 +294,20 @@ class SendSandwich(UDPSend):
             else:
                 if packet_count == 1:
                     start_time = packet.get_SendTime()
-                elif packet_count == para_infomation.nPacket:
+                elif packet_count == para_information.nPacket:
                     end_time = packet.get_SendTime()
                     # len(packet)实际发的字节数,utf-8中英文与数字都只占一个字节,所以不用转换为bytes类型
                     sum_bytes.value = packet_count * len(packet) * 20
                     transmission_time.value = (end_time - start_time).seconds
 
             packet_count += 1
-            if packet_count > para_infomation.nPacket:
+            if packet_count > para_information.nPacket:
                 break                 # 当包计数器超过预先设定的发包数时,退出循环
-            sleep(para_infomation.generate_interval())           # 发包间隔,每发完一个包,程序等待一段时间
+            sleep(para_information.generate_interval())           # 发包间隔,每发完一个包,程序等待一段时间
 
-    def Sendpacket(self, sock, ListAddress, para_infomation):
-        if para_infomation.packet_type != TYPE_SANDWICH:
-            raise ValueError("Wrong Packet Type: %s" % para_infomation.packet_type)
+    def Sendpacket(self, sock, ListAddress, para_information):
+        if para_information.packet_type != TYPE_SANDWICH:
+            raise ValueError("Wrong Packet Type: %s" % para_information.packet_type)
         sum_bytes1 = Value('i', 0)
         sum_bytes2 = Value('i', 0)
         transmission_time1 = Value('i', 0)
@@ -318,9 +318,9 @@ class SendSandwich(UDPSend):
         event1 = Event()
         event2 = Event()
 
-        child_process1 = Process(target=self.SendToLittle, args=(sock, para_infomation, ListAddress[0],
+        child_process1 = Process(target=self.SendToLittle, args=(sock, para_information, ListAddress[0],
                                                                  event1, event2, sum_bytes1, transmission_time1))
-        child_process2 = Process(target=self.SendToLarge, args=(sock, para_infomation, ListAddress[1],
+        child_process2 = Process(target=self.SendToLarge, args=(sock, para_information, ListAddress[1],
                                                                 event1, event2, sum_bytes2, transmission_time2))
         # 启动进程
         child_process1.start()
