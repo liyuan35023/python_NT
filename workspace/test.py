@@ -1,17 +1,114 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 __author__ = 'liyuan35023'
-from datetime import datetime, time
-from time import sleep
-from multiprocessing import Value
-a = datetime.now()
-print a
-sleep(1)
-c = datetime.now()
-print c
-print (c-a).seconds / 3.0
+# import time
+from datetime import datetime
+# import struct
+# a = struct.pack('>I', 65)
+# print a
+#
+# print struct.unpack('>IH', b'\xf0\xf0\xf0\xf0\x80\x80')
+q = datetime.now()
+# w = datetime.now()
+# sr = (w-q).microseconds / float(1000000)
+# se = w.microsecond-q.microsecond
+# print sr
+# print se
+# timefsd = str(datetime.now())
+# print datetime.now()
+# # t = time.time()
+# # print t
+# # print datetime.fromtimestamp(t)
+#
+# timearray = time.strptime(timefsd, "%Y-%m-%d %H:%M:%S.%f")
+#
+# stamp = int(time.mktime(timearray))
+# print stamp
+# print datetime.fromtimestamp(stamp)
+#
+# print struct.pack('>I', stamp)
+# # print struct.unpack('>10I', struct.pack('>I', stamp))
+#
+# s = 'fadsfafsd'
+# leng =len(s)
+# print struct.pack('>I%ss' % leng, 10, s)
 
-v = Value('t')
-v.value = a
-print v.value
+
+import Queue
+import threading
+import time
+import os
+queue = Queue.Queue()
+queue.put((2, 3))
+a= queue.get()
+
+print a
+source_ip = '192.168.1.13'
+if not os.path.isdir('received_packet'):
+            os.mkdir('./received_packet')
+try:
+    file0 = open('./received_packet/packet_%s' % source_ip, 'a')   # 每个源目的结点对应一个文件
+except IOError, e:
+    print "Can't create 'packet_%s' file:%s:" % (source_ip, e)
+else:
+    a = (3, 3, 4)
+    file0.write(str(a))
+    file0.write(str(q))
+finally:
+    file0.close()
+
+#
+# #
+# class ThreadNum(threading.Thread):
+#  """没打印一个数字等待1秒，并发打印10个数字需要多少秒？"""
+#   def __init__(self, queue):
+#     threading.Thread.__init__(self)
+#     self.queue = queue
+#
+#   def run(self):
+#     while True:
+#       #消费者端，从队列中获取num
+#       num = self.queue.get()
+#       print "i'm num %s"%(num)
+#       time.sleep(1)
+#       #在完成这项工作之后，使用 queue.task_done() 函数向任务已经完成的队列发送一个信号
+#       self.queue.task_done()
+#
+# start = time.time()
+# def main():
+#   #产生一个 threads pool, 并把消息传递给thread函数进行处理，这里开启10个并发
+#   for i in range(10):
+#     t = ThreadNum(queue)
+#     t.setDaemon(True)
+#     t.start()
+#
+#   #往队列中填错数据
+#   for num in range(10):
+#       queue.put(num)
+#   #wait on the queue until everything has been processed
+#   queue.join()
+#
+# main()
+# print "Elapsed Time: %s" % (time.time() - start)
+
+
+
+
+
+
+# from datetime import datetime, time
+# from time import sleep
+# from multiprocessing import Value
+# a = datetime.now()
+# print a
+# sleep(1)
+# c = datetime.now()
+# print c
+# print (c-a).seconds / 3.0
+#
+# v = Value('t')
+# v.value = a
+# print v.value
 
 
 
