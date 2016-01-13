@@ -1,5 +1,6 @@
-__author__ = 'liyuan35023'
 # -*- coding: utf-8 -*-
+__author__ = 'liyuan35023'
+
 """
 该文件已弃用,服务器端使用SocketServer模块实现多进程收包
 """
@@ -19,7 +20,7 @@ def create_socket():
     try:
         recv_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     except socket.error, e:
-        print "Error Create recv_Socket: %s" % e
+        print "Error Create recv_Socket: %s" % str(e)
     else:
         # enable reuse address/port
         recv_sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -37,6 +38,7 @@ def receive_packet(sock):
     while True:
         print "Waiting for data..."
         data, client_addr = sock.recvfrom(BUF_SIZE)
+        print type(client_addr[0])
         print "Process %s Received data:'%s' from %s.   Arrived time: %s" % (os.getpid(), data, client_addr, datetime.now())
         #time_now = datetime.now()
         #arrived_time.append(time_now)

@@ -5,10 +5,12 @@ import argparse
 import os
 import Client_Send
 import forkingServer_Receive
+import signal
 
 SEND_RECV = 0
 CLIENTSEND = 1
 SERVERRECV = 2
+
 
 def client_send():
     Client_Send.main()
@@ -28,7 +30,7 @@ def server_receive():
 
 def main():
     # 解析从命令行传入的参数,确定测量工具的模式(0--发送模式与接收模式都启动,1--发送,2--接收)
-    parse = argparse.ArgumentParser(description="SEND mode or RECV mode")
+    parse = argparse.ArgumentParser(description="SEND mode or RECEIVE mode")
     parse.add_argument("--mode", action="store", dest="mode", type=int, required=True)
     given_args = parse.parse_args()
     mode = given_args.mode
@@ -41,10 +43,12 @@ def main():
         pid = os.fork()
         if pid == 0:
             client_send()       # 子进程执行发送任务,发送完毕后子进程关闭
+            # os._exit(0)
         else:
             server_receive()    # 父进程执行接收任务,接收服务器一直运行
+
     else:
-        raise ValueError("mode not found!please check your argparse...")
+        raise ValueError("Unexpected mode!please check your argparse...")
 
 if __name__ == "__main__":
     main()

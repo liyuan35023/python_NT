@@ -1,5 +1,6 @@
-__author__ = 'liyuan35023'
 # -*- coding: utf-8 -*-
+__author__ = 'liyuan35023'
+
 
 import socket
 import sys
@@ -31,7 +32,7 @@ def send_packet(sock):
         if len(list_parameter) != 4:
             raise ValueError("Miss send parameters in ./readfiles/sendparameter.txt, Need four parameters!")
         else:
-            ptype = int(list_parameter[0].strip())   ## strip把行尾'\n'字符去掉
+            ptype = int(list_parameter[0].strip())   # strip把行尾'\n'字符去掉
             nPacket = int(list_parameter[1].strip())
             interval_mode = int(list_parameter[2].strip())
             psize = int(list_parameter[3].strip())
@@ -54,24 +55,27 @@ def send_packet(sock):
                 if line.strip():    # 行不为空
                     ListAddress.append((line.strip(), PORT))
     else:
-        raise ValueError("Packet Type %s Not Found" % ptype)
+        raise ValueError("Unexpected Packet Type %s" % ptype)
 
-    # 发送参数设定
-    parameter = Send_UDPPacket.Para_info(ptype, interval_mode, psize, nPacket)
-
-    # 调用单播或者背靠背或者三明治包的类,发送探测包
-    print "Sending Packet..."
-    if ptype == 0:
-        UDPPacket = Send_UDPPacket.SendUnicast()
-        UDPPacket.Sendpacket(sock, ListAddress, parameter)
-    elif ptype == 1:
-        UDPPacket = Send_UDPPacket.SendBackToBack()
-        UDPPacket.Sendpacket(sock, ListAddress, parameter)
-    elif ptype == 2:
-        UDPPacket = Send_UDPPacket.SendSandwich()
-        UDPPacket.Sendpacket(sock, ListAddress, parameter)
+    try:
+        # 发送参数设定
+        parameter = Send_UDPPacket.Para_info(ptype, interval_mode, psize, nPacket)
+    except Exception, e:
+        print "Error generate Para info, may be file 'sendparameter' is not be read successfully: %s" % e
     else:
-        raise ValueError("Packet Type %s Not Found" % ptype)
+        # 调用单播或者背靠背或者三明治包的类,发送探测包
+        print "Sending Packet..."
+        if ptype == 0:
+            UDPPacket = Send_UDPPacket.SendUnicast()
+            UDPPacket.Sendpacket(sock, ListAddress, parameter)
+        elif ptype == 1:
+            UDPPacket = Send_UDPPacket.SendBackToBack()
+            UDPPacket.Sendpacket(sock, ListAddress, parameter)
+        elif ptype == 2:
+            UDPPacket = Send_UDPPacket.SendSandwich()
+            UDPPacket.Sendpacket(sock, ListAddress, parameter)
+        else:
+            raise ValueError("Packet Type %s Not Found" % ptype)
 
 
 # 主函数,在measure_tools中调用main函数
