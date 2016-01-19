@@ -7,14 +7,15 @@ import os.path
 import socket
 import random
 import string
-import ntplib
+# import ntplib
 import threading
 import struct
+import logging
+import imp
 from multiprocessing import Process, Event, Value
 from time import *
 from datetime import datetime
 from scipy import stats
-import imp
 
 
 # 发送包的类型
@@ -27,22 +28,26 @@ UNIFORM = 0
 POISSON = 1
 GAUSS = 2
 
+# 定义日志格式,级别,输出位置
+logging.basicConfig(level=logging.WARNING, format='%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s',
+                    datefmt='%a, %d %b %Y %H:%M:%S', filename='send_err.log', filemode='a')
 
-def get_time():
-    """
-    时间显示函数,用来返回网络时间
-    """
-    try:
-        ntp_client = ntplib.NTPClient()
-        response = ntp_client.request('cn.ntp.org.cn')
-    except socket.gaierror:
-        sleep(5)
-        print("网络不通\n")
-    except ntplib.NTPException:
-        sleep(5)
-        print("请求NTP时间同步超时\n")
-    else:
-        return ctime(response.tx_time)
+
+# def get_time():
+#     """
+#     时间显示函数,用来返回网络时间
+#     """
+#     try:
+#         ntp_client = ntplib.NTPClient()
+#         response = ntp_client.request('cn.ntp.org.cn')
+#     except socket.gaierror:
+#         sleep(5)
+#         print("网络不通\n")
+#     except ntplib.NTPException:
+#         sleep(5)
+#         print("请求NTP时间同步超时\n")
+#     else:
+#         return ctime(response.tx_time)
 
 
 class Send_info(object):
@@ -57,14 +62,21 @@ class Send_info(object):
 
     def __str__(self):
         # 打包发送信息
-        imp.acquire_lock()    # 防止发生_strptime_time错误
-        timearray = strptime(str(self.__SendTime), "%Y-%m-%d %H:%M:%S.%f")
-        imp.release_lock()
-        timestamp = int(mktime(timearray))
-        length = len(str(self.__packet_buf))
-        self.send_str = struct.pack('>6s3I%ss' % length, 'Number', self.__packet_number, timestamp,
-                                    self.__total_packet, self.__packet_buf)
-        return self.send_str
+
+        try:
+            # imp.acquire_lock()    # 防止发生_strptime_time错误
+            # timearray = strptime(str(self.__SendTime), "%Y-%m-%d %H:%M:%S.%f")
+            # imp.release_lock()
+            # timestamp = int(mktime(timearray))
+            length = len(str(self.__packet_buf))
+            # struct.pack 按格式打包发送的信息,length为随机字符串的长度.
+            # self.send_str = struct.pack('>6s3I%ss' % length, 'Number', self.__packet_number, timestamp,
+            #                            self.__total_packet, self.__packet_buf)
+            self.send_str = struct.pack('>6sI26sI%ss' % length, 'Number', self.__packet_number, str(self.__SendTime),
+                                        self.__total_packet, self.__packet_buf)
+            return self.send_str
+        except Exception, e:
+            logging.warning(e)
 
     def __len__(self):
         return len(self.send_str)
@@ -86,7 +98,7 @@ class Para_info(object):
         self.packet_size = packet_size
         self.nPacket = nPacket
 
-    def generate_interval(self, uniform_interval=2, poisson_lambda=3, norm_mean=5, norm_standarddeviation=1):
+    def generate_interval(self, uniform_interval=0.1, poisson_lambda=3, norm_mean=5, norm_standarddeviation=1):
         interval = -1
         while interval < 0:        # 高斯分布可能随机到负数
             if self.interval_mode == UNIFORM:      # 均匀发包
@@ -96,7 +108,8 @@ class Para_info(object):
             elif self.interval_mode == GAUSS:      # 高斯发包(正态分布)
                 interval = stats.norm.rvs(norm_mean, norm_standarddeviation)
             else:
-                raise ValueError("Interval Mode '%s' Not Found" % self.interval_mode)
+                logging.error("Interval Mode '%s' Not Found" % self.interval_mode)
+                interval = 1    # 默认为间隔为1秒的均匀分布
         return interval
 
 
@@ -105,16 +118,16 @@ class UDPSend(object):
     该类用来执行客户端的发送命令,是一个基类.
     可用于发送单播,背靠背包或三明治包
     """
-    def Sendpacket(self, sock, ListAddress, para_infomation):
+    def Sendpacket(self, sock, ListAddress, para_information):
         pass
 
     # 确定包的内容,参数为小包的字节数,三明治包中大包的大小在发送函数中进行控制
     @staticmethod
-    def generate_packet(littepacket, packet_number, total_packet):
+    def generate_packet(littepacket_count, packet_number, total_packet):
         seed = ['z', 'y', 'x', 'w', 'v', 'u', 't', 's', 'r', 'q', 'p', 'o', 'n', 'm', 'l', 'k', 'j', 'i', 'h', 'g', 'f',
                 'e', 'd', 'c', 'b', 'a']
         packet_buf = []
-        while len(packet_buf) < littepacket:
+        while len(packet_buf) < (littepacket_count - 40):
             packet_buf.append(random.choice(seed))
         packet_buf = string.join(packet_buf).replace(' ', '')
         Packet = Send_info(packet_number, datetime.now(), total_packet, packet_buf)
@@ -122,9 +135,14 @@ class UDPSend(object):
 
     # 计算发包速率
     @staticmethod
-    def calculate_sendrate(time, bytes):
-        rate = bytes / float(time)
-        return rate
+    def calculate_sendrate(total_time, total_bytes):
+        try:
+            rate = total_bytes / float(total_time)
+            return rate
+        except ValueError, e:
+            logging.error(e)
+        except ArithmeticError, e:     # 包括float 与 ZeroDivisionError
+            logging.error(e)
 
     # FIXME: 需不需要在发送端将发送特征写入文件？
     # 发送完成后,向文件中写入发送的特征
@@ -137,18 +155,21 @@ class UDPSend(object):
         try:
             file0 = open('./writefiles/sentfeature-%s' % addr, 'w')   # 生成多个文件
         except IOError, e:
-            print "Can't create 'sentfeature' file:%s" % e
+            logging.error("Can't create 'sentfeature' file:%s" % e)
         else:
-            if isinstance(addr, str):
-                file0.write('目的地址：%s\n' % addr)
-            elif isinstance(addr, list):
-                file0.write('目的地址：%s, %s\n' % (addr[0], addr[1]))
-            file0.write('发包类型：%s\n' % dict1[packettype])
-            file0.write('发包间隔采样方式：%s\n' % dict2[intervalmode])
-            file0.write('发包数目：%s\n' % numberOfpacket)
-            file0.write('发包速率：%s Bytes/s\n' % rate)
-        finally:
-            file0.close()
+            try:
+                if isinstance(addr, str):
+                    file0.write('目的地址：%s\n' % addr)
+                elif isinstance(addr, list):
+                    file0.write('目的地址：%s, %s\n' % (addr[0], addr[1]))
+                file0.write('发包类型：%s\n' % dict1[packettype])
+                file0.write('发包间隔采样方式：%s\n' % dict2[intervalmode])
+                file0.write('发包数目：%s\n' % numberOfpacket)
+                file0.write('发包速率：%s Bytes/s\n' % rate)
+            except IOError, e:
+                logging.error(e)
+            finally:
+                file0.close()
 
 
 class SendUnicast(UDPSend):
@@ -163,11 +184,11 @@ class SendUnicast(UDPSend):
                 # 探测包直接生成,包的信息包括时间及随机产生的字符串及包的序号
                 packet = self.generate_packet(para_information.packet_size, packet_count, para_information.nPacket)
                 sock.sendto(str(packet), (addr, port))
-                print "Success to Send Num %s Unicast packet to %s!" % (packet_count, addr)
+                logging.info("Success to Send Num %s Unicast packet to %s!" % (packet_count, addr))
             except socket.error, e:
-                print "Error Send Num %s Unicast Packet to %s: %s" % (packet_count, addr, str(e))
+                logging.error("Error Send Num %s Unicast Packet to %s: %s" % (packet_count, addr, e))
             except Exception, e:
-                print "Other Exception When sending Num %s Unicast Packet: %s" % (packet_count, str(e))
+                logging.error("Other Exception When sending Num %s Unicast Packet: %s" % (packet_count, e))
             else:
                 # 计算报文发送速率,单位为bytes/s.并在发送完成后,将发送特征写入文件
                 if packet_count == 1:
@@ -183,7 +204,8 @@ class SendUnicast(UDPSend):
                     # len(packet)实际发的字节数,utf-8中英文与数字都只占一个字节,所以不用转换为bytes类型
                     sum_bytes = packet_count * (len(packet) - 1)
                     Transmission_rate = self.calculate_sendrate(transmissiontime, sum_bytes)
-                    print "Send to %s ,Transmission rate is %s" % (addr, Transmission_rate)
+                    print "Success to Send %s packet to %s .Transmission rate is %s" % (packet_count, addr,
+                                                                                        Transmission_rate)
                     # 将发送特征写入文件
                     # self.write_feature(addr, para_information.packet_type, para_information.interval_mode,
                     #                    para_information.nPacket, Transmission_rate)
@@ -193,22 +215,22 @@ class SendUnicast(UDPSend):
                 break         # 当包计数器超过预先设定的发包数时,退出循环
             sleep(para_information.generate_interval())    # 发包间隔,每发完一个包,程序等待一段时间
 
-    def Sendpacket(self, sock, ListAddress, para_infomation):
-        if para_infomation.packet_type != TYPE_UNICAST:
-            raise ValueError("Wrong Packet Type: %s" % para_infomation.packet_type)
+    def Sendpacket(self, sock, ListAddress, para_information):
+        if para_information.packet_type != TYPE_UNICAST:
+            raise ValueError("Wrong Packet Type: %s" % para_information.packet_type)
         # 多线程发送不同目的地址的单播包
         thread_pool = list()
         try:
             for i in xrange(len(ListAddress)):
-                thread_pool.append(threading.Thread(target=self.SendTo, args=(sock, para_infomation, ListAddress[i])))
+                thread_pool.append(threading.Thread(target=self.SendTo, args=(sock, para_information, ListAddress[i])))
         except BaseException, e:
-            print "Error Creating Thread: %s" % e
+            logging.error("Error Creating Thread: %s" % e)
         else:
             try:
                 for thread in thread_pool:
                     thread.start()
             except BaseException, e:
-                print "Error Start Thread (%s): %s" % (threading.current_thread().name, e)
+                logging.error("Error Start Thread (%s): %s" % (threading.current_thread().name, e))
             else:
                 for thread in thread_pool:
                     thread.join()
@@ -232,11 +254,11 @@ class SendBackToBack(UDPSend):
                 # 探测包直接生成,包的信息包括时间及随机产生的字符串及包的序号
                 packet = self.generate_packet(para_information.packet_size, packet_count)
                 sock.sendto(str(packet), (addr, port))
-                print "Success to Send Num %s BTB Packet to %s" % (packet_count, addr)
+                logging.info("Success to Send Num %s BTB Packet to %s" % (packet_count, addr))
             except socket.error, e:
-                print "Error Send Num %s BTB Packet to %s: %s" % (packet_count, addr, str(e))
+                logging.error("Error Send Num %s BTB Packet to %s: %s" % (packet_count, addr, e))
             except Exception, e:
-                print "Other Exception When Sending Num %s BTB Packet to %s: %s" % (packet_count, addr, str(e))
+                logging.error("Other Exception When Sending Num %s BTB Packet to %s: %s" % (packet_count, addr, e))
             else:
                 if packet_count == 1:
                     start_time = packet.get_SendTime()
@@ -254,7 +276,6 @@ class SendBackToBack(UDPSend):
                 break                 # 当包计数器超过预先设定的发包数时,退出循环
             sleep(para_information.generate_interval())           # 发包间隔,每发完一个包,程序等待一段时间
 
-
     def Sendpacket(self, sock, ListAddress, para_information):
         if para_information.packet_type != TYPE_BACKTOBACK:
             raise ValueError("Wrong Packet Type: %s" % para_information.packet_type)
@@ -270,7 +291,6 @@ class SendBackToBack(UDPSend):
                                                            sum_bytes1, transmission_time1))
         child_process2 = Process(target=self.SendTo, args=(sock, para_information, ListAddress[1],
                                                            sum_bytes2, transmission_time2))
-
         # start函数：启动子进程,进行发包
         child_process1.start()
         print "Process %s is sending packet to %s......" % (child_process1.pid, ListAddress[0][0])
@@ -289,7 +309,7 @@ class SendBackToBack(UDPSend):
             # self.write_feature(ListAddress, para_information.packet_type, para_information.interval_mode,
             #                    para_information.nPacket, Transmission_rate)
         else:
-            raise ValueError("transmissiontime1 not equal to transmission2!")
+            logging.error("transmissiontime1 not equal to transmissiontime2!")
         print "Closing Connection to the Server..."
         sock.close()
 
@@ -310,11 +330,11 @@ class SendSandwich(UDPSend):
                 sock.sendto(str(packet), (addr, port))
                 # event1 表示第一个小包发送完毕
                 event1.set()
-                print "Success to Send Num %s first small sandwich packet to %s" % (packet_count, addr)
+                logging.info("Success to Send Num %s first small sandwich packet to %s" % (packet_count, addr))
             except socket.error, e:
-                print "Error to Send Num %s first small sandwich packet to %s: %s" % (packet_count, addr, str(e))
+                logging.error("Error to Send Num %s first small sandwich packet to %s: %s" % (packet_count, addr, e))
             except Exception, e:
-                print "Other Exception When Sending Num %s first small sandwich packet: %s" % (packet_count, str(e))
+                logging.error("Other Exception When Sending Num %s first small sandwich packet: %s" % (packet_count, e))
             else:
                 if packet_count == 1:
                     start_time = packet.get_SendTime()
@@ -325,11 +345,11 @@ class SendSandwich(UDPSend):
             try:
                 packet = self.generate_packet(para_information.packet_size, packet_count)
                 sock.sendto(str(packet), (addr, port))
-                print "Success to Send Num %s third small sandwich packet to %s" % (packet_count, addr)
+                logging.info("Success to Send Num %s third small sandwich packet to %s" % (packet_count, addr))
             except socket.error, e:
-                print "Error to Send Num %s third small sandwich packet to %s: %s" % (packet_count, addr, str(e))
+                logging.error("Error to Send Num %s third small sandwich packet to %s: %s" % (packet_count, addr, e))
             except Exception, e:
-                print "Other Exception When Sending Num %s third small sandwich packet: %s" % (packet_count, str(e))
+                logging.error("Other Exception When Sending Num %s third small sandwich packet: %s" % (packet_count, e))
             else:
                 if packet_count == para_information.nPacket:
                     end_time = packet.get_SendTime()
@@ -359,11 +379,11 @@ class SendSandwich(UDPSend):
                 sock.sendto(str(packet) * 25, (addr, port))
                 # 发送完大包后,将时间event设置为已发生,使另外一个子进程继续发送第三个小探测包
                 event2.set()
-                print "Success to Send Num %s second large sandwich packet to %s" % (packet_count, addr)
+                logging.info("Success to Send Num %s second large sandwich packet to %s" % (packet_count, addr))
             except socket.error, e:
-                print "Error to Send Num %s second large sandwich packet to %s: %s" % (packet_count, addr, str(e))
+                logging.error("Error to Send Num %s second large sandwich packet to %s: %s" % (packet_count, addr, e))
             except Exception, e:
-                print "Other Exception When Sending Num %s second large sandwich packet: %s" % (packet_count, str(e))
+                logging.error("Other Exception When Sending Num %s second large sandwich packet: %s" % (packet_count, e))
             else:
                 if packet_count == 1:
                     start_time = packet.get_SendTime()
@@ -416,7 +436,7 @@ class SendSandwich(UDPSend):
             # self.write_feature(ListAddress, para_information.packet_type, para_information.interval_mode,
             #                    para_information.nPacket, Transmission_rate)
         else:
-            raise ValueError("transmissiontime1 not equal to transmission2!")
+            logging.error("transmissiontime1 not equal to transmission2!")
 
         print "Closing Connection to the Server..."
         sock.close()

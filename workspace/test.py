@@ -1,15 +1,77 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 __author__ = 'liyuan35023'
-# import time
+
+
 from datetime import datetime
-# import struct
-# a = struct.pack('>I', 65)
-# print a
+from time import *
+import struct
+a = datetime.now()
+print a
+print len(str(a))
+b = str(a)[11:26]
+print b
+send = struct.pack('I26sI', 45, str(a), 156)
+print send
+receive = struct.unpack('I26sI', send)
+print receive
+
+c = '1  07:50:23.318581  07:50:23.361531  131.179.150.72  192.52.240.214  50'
+print len(c)
+
+
+# timearray = strptime(str(a), "%Y-%m-%d %H:%M:%S.%f")
+# print timearray
+
+
+
+
+
+
+
+
+
+
+
+# import logging
 #
-# print struct.unpack('>IH', b'\xf0\xf0\xf0\xf0\x80\x80')
-q = datetime.now()
-# w = datetime.now()
+# logging.basicConfig(level=logging.WARNING, format='%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s',
+#                     datefmt='%a, %d %b %Y %H:%M:%S', filename='send_err.log', filemode='a')
+#
+#
+# def divide(a):
+#     try:
+#         b = 10 / a
+#         c = b + 1
+#         return c
+#     except Exception, e:
+#         print type(str(e))
+#         print 'fsdf:%s' % str(e)
+#         logging.error(e)
+#
+#
+# # if __name__ == '__main__':
+# #     divide(1)
+# for x in (1, 2):
+#     print x
+# from collections import namedtuple
+#
+# point = namedtuple('point', ['a', 'b'])
+# p = point()
+# print p.b
+
+
+
+
+# import time
+# from datetime import datetime
+# # import struct
+# # a = struct.pack('>I', 65)
+# # print a
+# #
+# # print struct.unpack('>IH', b'\xf0\xf0\xf0\xf0\x80\x80')
+# q = datetime.now()
+# # w = datetime.now()
 # sr = (w-q).microseconds / float(1000000)
 # se = w.microsecond-q.microsecond
 # print sr
@@ -34,28 +96,28 @@ q = datetime.now()
 # print struct.pack('>I%ss' % leng, 10, s)
 
 
-import Queue
-import threading
-import time
-import os
-queue = Queue.Queue()
-queue.put((2, 3))
-a= queue.get()
-
-print a
-source_ip = '192.168.1.13'
-if not os.path.isdir('received_packet'):
-            os.mkdir('./received_packet')
-try:
-    file0 = open('./received_packet/packet_%s' % source_ip, 'a')   # 每个源目的结点对应一个文件
-except IOError, e:
-    print "Can't create 'packet_%s' file:%s:" % (source_ip, e)
-else:
-    a = (3, 3, 4)
-    file0.write(str(a))
-    file0.write(str(q))
-finally:
-    file0.close()
+# import Queue
+# import threading
+# import time
+# import os
+# queue = Queue.Queue()
+# queue.put((2, 3))
+# a= queue.get()
+#
+# print a
+# source_ip = '192.168.1.13'
+# if not os.path.isdir('received_packet'):
+#             os.mkdir('./received_packet')
+# try:
+#     file0 = open('./received_packet/packet_%s' % source_ip, 'a')   # 每个源目的结点对应一个文件
+# except IOError, e:
+#     print "Can't create 'packet_%s' file:%s:" % (source_ip, e)
+# else:
+#     a = (3, 3, 4)
+#     file0.write(str(a))
+#     file0.write(str(q))
+# finally:
+#     file0.close()
 
 #
 # #

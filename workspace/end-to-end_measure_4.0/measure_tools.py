@@ -6,6 +6,7 @@ import os
 import Client_Send
 import threadingServer_Receive
 import signal
+from multiprocessing import Process
 
 SEND_RECV = 0
 CLIENTSEND = 1
@@ -38,20 +39,27 @@ def main():
     """在模式0中,处理发送子进程的退出信号,告诉接收父进程它并不关心子进程的状态,发送完毕后,
     系统正常关闭子进程,这样可以避免僵尸进程的产生.
     """
-    signal.signal(signal.SIGCHLD, signal.SIG_IGN)
+    # signal.signal(signal.SIGCHLD, signal.SIG_IGN)
 
     if mode == 1:
         client_send()           # 客户端发包模式
     elif mode == 2:
         server_receive()        # 服务器收包模式
     elif mode == 0:
-        pid = os.fork()
-        if pid == 0:
-            client_send()       # 子进程执行发送任务,发送完毕后子进程关闭
-            # os._exit(0)
-        else:
-            server_receive()    # 父进程执行接收任务,接收服务器一直运行
+        # pid = os.fork()
+        # if pid == 0:
+        #     client_send()       # 子进程执行发送任务,发送完毕后子进程关闭
+        #     # os._exit(0)
+        # else:
+        #     server_receive()    # 父进程执行接收任务,接收服务器一直运行
+        send_process = Process(target=client_send)
+        receive_process = Process(target=server_receive)
 
+        receive_process.start()
+        send_process.start()
+
+        receive_process.join()
+        send_process.join()
     else:
         raise ValueError("Unexpected mode!please check your argparse...")
 

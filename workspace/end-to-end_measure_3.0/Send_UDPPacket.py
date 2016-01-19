@@ -129,7 +129,6 @@ class UDPSend(object):
         rate = bytes / float(time)
         return rate
 
-    # FIXME: 需不需要在发送端将发送特征写入文件？
     # 发送完成后,向文件中写入发送的特征
     @staticmethod
     def write_feature(addr, packettype, intervalmode, numberOfpacket, rate):
