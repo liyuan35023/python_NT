@@ -31,7 +31,7 @@ plt.plot(setin, poisson, "-o", lw=2, label=u"poisson", color="red")
 
 
 import numpy as np
-plt.figure(2, figsize=(8, 4))
+plt.figure(2, figsize=(10, 4))
 X = stats.norm()
 t = np.arange(-5, 5, 0.01)
 
