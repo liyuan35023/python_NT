@@ -2,29 +2,68 @@
 # -*- coding: utf-8 -*-
 __author__ = 'liyuan35023'
 
+import linecache
+try:
+    #f = open('./fuck.py', 'r')
+    linecache.clearcache()
+    print map(int, linecache.getline('./end-to-end_measure_2.0.0/readfiles/measure_matrix', 2).strip().split(' '))
+except IOError, e:
+    print e
+    raise IOError("read sendparameter './readfiles/sendparameter' error : %s" % e)
+except Exception, e:
+    print e
 
+def da(a, b, c):
+    return a+b+c
+
+f = open('./end-to-end_measure_2.0.0/readfiles/sendparameter', 'r')
+print map(int, f.readlines())
+
+
+# for x in xrange(0,11):
+#     for y in xrange(0,11):
+#         for z in xrange(0,11):
+#             for a in xrange(0,11):
+#                 for b in xrange(0,11):
+#                     for c in xrange(0,11):
+#                         for q in xrange(0,11):
+#                             for w in xrange(0,11):
+#                                 for e in xrange(0,11):
+#                                     suma = 6*x + 7*y + 8*z + 7*a + 8*b +9*c + 8*q + 9*w + 10*e
+#                                     nodes = x+y+z+a+b+c+q+w+e
+#                                     if (suma  == 200) and 28 <= nodes <= 30:
+#                                         print x, y, z, a, b, c, q, w, e
+
+
+# for x in xrange(5,10):
+#     for b in xrange(5,10):
+#         for e in xrange(5,10):
+#             suma = 6*x + 8*b + 10*e
+#             if (suma  == 200):
+#                 print x, b, e
 from datetime import datetime
 from time import *
 import struct
-a = datetime.now()
-print a
-print len(str(a))
-b = str(a)[11:26]
-print b
-send = struct.pack('I26sI', 45, str(a), 156)
-print send
-receive = struct.unpack('I26sI', send)
-print receive
-
-c = '1  07:50:23.318581  07:50:23.361531  131.179.150.72  192.52.240.214  50'
-print len(c)
+# a = datetime.now()
+# print a
+# print len(str(a))
+# b = str(a)[11:26]
+# print b
+# send = struct.pack('I26sI', 45, str(a), 156)
+# print send
+# receive = struct.unpack('I26sI', send)
+# print receive
+#
+# c = '1  07:50:23.318581  07:50:23.361531  131.179.150.72  192.52.240.214  50'
+# print len(c)
 
 
 # timearray = strptime(str(a), "%Y-%m-%d %H:%M:%S.%f")
 # print timearray
 
-
-
+# finally:
+#     if 'f' in locals():
+#         f.close()
 
 
 
